@@ -8,11 +8,14 @@ import { expect, test } from '@playwright/test';
 
 test.describe('User testing Suite', () => {
 
+    let libraryComponent: LibraryComponent;
+
     test.beforeEach(async ({ page }) => {
         const loginPage = new LoginPage(page);
+        libraryComponent = new LibraryComponent(page);
 
         await page.goto('http://localhost:8080/login');
-        await loginPage.loginUser(`automation@test.com`, `temp123`);
+        await loginPage.loginUser(`tea@test.com`, `temp123`);
         await page.waitForSelector('//h1', {timeout: 5000});
     })
     
@@ -32,13 +35,12 @@ test.describe('User testing Suite', () => {
     test('Add a book', async ({ page }) => {
         const bookTitle = "QA";
         const authorName = "Automation";
-        const libraryComponent = new LibraryComponent (page);
         const addBookComponent = new AddBookComponent (page);
         const bookRowComponent = new BookRowComponent (page);
         await libraryComponent.clickAddBook();
         expect(addBookComponent.dialogHeader).toBeVisible();
-        await addBookComponent.enterAuthorName(authorName);
-        await addBookComponent.enterBookTitle(bookTitle);
+        await addBookComponent.enterAuthorName(authorName, `Author *`);
+        await addBookComponent.enterBookTitle(bookTitle, `Title *`);
         await addBookComponent.createBookRecord();
         expect(await bookRowComponent.getTaskTitle(bookTitle)).toEqual(authorName + " - " + bookTitle);
     });
@@ -75,7 +77,7 @@ test.describe('User testing Suite', () => {
 
     })
 
-    test('Mark the book as completed', async ({page}) => {
+    test.only('Mark the book as completed', async ({page}) => {
         const bookTitle = "Luna";
         const authorName = "Vinka Sazdova";
         const libraryComponent = new LibraryComponent (page);
@@ -83,15 +85,15 @@ test.describe('User testing Suite', () => {
         const bookRowComponent = new BookRowComponent (page);
         await libraryComponent.clickAddBook();
         expect(addBookComponent.dialogHeader).toBeVisible();
-        await addBookComponent.enterAuthorName(authorName);
-        await addBookComponent.enterBookTitle(bookTitle);
+        await addBookComponent.enterAuthorName(authorName, `Author *`);
+        await addBookComponent.enterBookTitle(bookTitle, `Title *`);
         await addBookComponent.createBookRecord();
         expect(await bookRowComponent.getTaskTitle(bookTitle)).toEqual(authorName + " - " + bookTitle);
         await bookRowComponent.toggleTaskCheckbox(bookTitle);
 
         //assert
         expect(await bookRowComponent.isTaskCompleted(authorName, bookTitle)).toBe(true);
-        // await bookRowComponent.deleteTask(bookTitle);
+        await bookRowComponent.deleteTask(bookTitle);
     })
 
 
