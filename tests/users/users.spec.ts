@@ -46,6 +46,7 @@ test.describe('User testing Suite', () => {
         const randomPersonName = faker.person.fullName();
         
         await dashboardPage.addPerson(randomPersonName);
+        await page.waitForSelector('//h3', { timeout: 5000 });
 
         expect(await dashboardPage.isPopupVisible()).toBeTruthy();
         expect(await dashboardPage.getPopupMessageText()).toBe(`Person added`);
@@ -57,6 +58,7 @@ test.describe('User testing Suite', () => {
 
         await dashboardPage.addPerson(randomPersonName);
         await dashboardPage.clickManagePerson();
+        await page.waitForSelector('//h3', { timeout: 5000 });
 
         expect(await dashboardPage.isPersonInList(randomPersonName)).toBeTruthy();
     });
@@ -64,6 +66,7 @@ test.describe('User testing Suite', () => {
     test('User logged out successfully', async ({ page }) => {
         const dashboardPage = new DashboardPage(page);
         await dashboardPage.clickSignOut()
+        await page.waitForSelector('//h3', { timeout: 5000 });
 
         expect(await dashboardPage.getLoginPageTitle()).toBe('Automation Tutorials');
     });
