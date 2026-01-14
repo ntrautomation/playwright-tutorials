@@ -4,19 +4,19 @@ import BasePage from "./base.page";
 class DashboardPage extends BasePage {
 
     private readonly dashboardTitle: Locator = this.page.locator('//h1');
-    private readonly loginPageTitle: Locator = this.page.locator('//h3');
+    private readonly loginPageTitle: Locator = this.page.locator(`//h3[normalize-space()='Automation Tutorials']`);
     private readonly addBookButton: Locator = this.page.locator(`//button/span[text() = 'Add a Book']`);
     private readonly addPersonButton: Locator = this.page.locator(`//button/span[text() = 'Add Person']`);
     private readonly enterNameField: Locator = this.page.locator(`//input[@placeholder='Enter person name']`);
     private readonly addPersonCreateButton: Locator = this.page.locator(`//div[@role="dialog"]//button[contains(@class, 'bg-primary')]`);
-    private readonly managePeople: Locator = this.page.locator(`//body/div[@id='root']/div[2]`);
+    private readonly managePeople: Locator = this.page.locator(`//span[normalize-space()='Manage People']`);
     private readonly createButton: Locator = this.page.locator(`//button[text() = 'Create']`);
     private readonly errorMessage: Locator = this.page.locator(`div#root li div div:nth-child(2)`);
     private readonly popupMessageLocator: Locator = this.page.locator("[data-radix-collection-item] .grid > div:nth-child(2)");
     private readonly authorInput: Locator = this.page.locator(`//input[@placeholder = 'Enter author name']`);
     private readonly titleInput: Locator = this.page.locator(`//input[@placeholder = 'Enter book title']`);
     private readonly peopleListItems: Locator = this.page.locator("//div[contains(@class,'space-y-2') and contains(@class,'mt-4')]//div[contains(@class,'p-3')]");
-    private readonly signOutButton: Locator = this.page.locator("//button[normalize-space()='Sign Out']]");
+    private readonly signOutButton: Locator = this.page.locator("//button[normalize-space()='Sign Out']");
 
     //METHODS
 
@@ -53,7 +53,8 @@ class DashboardPage extends BasePage {
     }
 
     async getPopupMessageText(): Promise<string | null> {
-        return await this.popupMessageLocator.textContent();
+        const text = await this.popupMessageLocator.textContent();
+        return text ? text.trim() : null;
     }
 
     async isPopupVisible(): Promise<boolean> {
@@ -72,6 +73,7 @@ class DashboardPage extends BasePage {
         await this.clickAddPerson();
         await this.enterNameField.fill(name);
         await this.addPersonCreateButton.click();
+        await this.popupMessageLocator.waitFor({ state: 'visible', timeout: 5000 });
     }
 
     async getBookByTitle(title: string): Promise<Locator> {
@@ -80,6 +82,10 @@ class DashboardPage extends BasePage {
 
     async isPersonInList(name: string): Promise<boolean> {
         return await this.peopleListItems.locator(`text="${name}"`).isVisible();
+    }
+
+    async waitForElementToAppear(locator: Locator, timeout: number = 5000): Promise<void> {
+        await locator.waitFor({ state: 'visible', timeout });
     }
 }
 export default DashboardPage;
