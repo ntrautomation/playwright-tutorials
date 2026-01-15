@@ -1,24 +1,24 @@
 import { test, expect } from '@fixtures/fixture.init';
-import { da, faker } from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 
 test.describe('User testing Suite', () => {
 
     test.beforeEach(async ({ loginPage }) => {
-        await loginPage.loginUser(`automation@test.com`, `temp123`);
+        await loginPage.loginUser(`automation@test.com`, `temp123`); //MOVE THIS
         await loginPage.page.waitForSelector('//h1', {timeout: 5000});
     });
     
     
     test('User logged in successfully', async ({ dashboardPage }) => {
-        expect(await dashboardPage.getDashboardTitle()).toBe('Dashboard');
+        expect(await dashboardPage.getDashboardTitle()).toBe('Dashboard');//MOVE THIS
     });
 
     test('Validate mandatory fields', async ({ dashboardPage }) => {
         await dashboardPage.clickAddBook();
         await dashboardPage.clickCreate();
-        await dashboardPage.page.waitForSelector(`div#root li div div:nth-child(2)`, {timeout: 5000});
+        await dashboardPage.page.waitForSelector(`div#root li div div:nth-child(2)`, {timeout: 5000});//MOVE THIS css selector
 
-        expect(await dashboardPage.getErrorMessage()).toBe(`Please fill in both title and author fields`);
+        expect(await dashboardPage.getErrorMessage()).toBe(`Please fill in both title and author fields`);//MOVE THIS
     });
 
     test('Add a book', async ({ dashboardPage }) => {
@@ -39,14 +39,14 @@ test.describe('User testing Suite', () => {
         await dashboardPage.addPerson(randomPersonName);
         await dashboardPage.page.waitForSelector('//h3', { timeout: 5000 });
 
-        expect(await dashboardPage.getPopupMessageText()).toBe(`Person added`);
+        expect(await dashboardPage.getPopupMessageText()).toBe(`Person added`); //MOVE THIS
     });
 
     test('Manage people', async ({ dashboardPage }) => {
         const randomPersonName = faker.person.fullName();
         await dashboardPage.addPerson(randomPersonName);
         const text = await dashboardPage.getPopupMessageText();
-        expect(text).toBe(`Person added`);
+        expect(text).toBe(`Person added`); //MOVE THIS
 
         await dashboardPage.clickManagePerson();
         expect(await dashboardPage.isPersonInList(randomPersonName)).toBeTruthy();
@@ -57,6 +57,6 @@ test.describe('User testing Suite', () => {
         await dashboardPage.clickSignOut()
         await dashboardPage.page.waitForSelector('//h3', { timeout: 5000 });
 
-        expect(await dashboardPage.getLoginPageTitle()).toBe('Automation Tutorials');
+        expect(await dashboardPage.getLoginPageTitle()).toBe('Automation Tutorials');//MOVE THIS
     });
 });
