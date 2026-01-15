@@ -12,7 +12,7 @@ test.describe('User testing Suite', () => {
         const loginPage = new LoginPage(page);
 
         await page.goto('http://localhost:8080/login');
-        await loginPage.loginUser(`automation@test.com`, `temp123`);
+        await loginPage.loginUser(`tea@test.com`, `temp123`);
         await page.waitForSelector('//h1', {timeout: 5000});
     })
     
@@ -91,7 +91,7 @@ test.describe('User testing Suite', () => {
 
         //assert
         expect(await bookRowComponent.isTaskCompleted(authorName, bookTitle)).toBe(true);
-        // await bookRowComponent.deleteTask(bookTitle);
+        await bookRowComponent.deleteTask(bookTitle);
     })
 
 
