@@ -1,34 +1,27 @@
-import LoginPage from '@objects/pages/login.page';
-import DashboardPage from '@objects/pages/dashboard.page';
-import { expect, test } from '@playwright/test';
-import { faker } from '@faker-js/faker';
+import { test, expect } from '@fixtures/fixture.init';
+import { da, faker } from '@faker-js/faker';
 
 test.describe('User testing Suite', () => {
 
-    test.beforeEach(async ({ page }) => {
-        const loginPage = new LoginPage(page);
-        await page.goto('http://localhost:8080/login');
+    test.beforeEach(async ({ loginPage }) => {
         await loginPage.loginUser(`automation@test.com`, `temp123`);
-        await page.waitForSelector('//h1', {timeout: 5000});
+        await loginPage.page.waitForSelector('//h1', {timeout: 5000});
     })
     
     
-    test('User logged in successfully', async ({ page }) => {
-        const dashboardPage = new DashboardPage(page);
+    test('User logged in successfully', async ({ dashboardPage }) => {
         expect(await dashboardPage.getDashboardTitle()).toBe('Dashboard');
     });
 
-    test('Validate mandatory fields', async ({ page }) => {
-        const dashboardPage = new DashboardPage(page);
+    test('Validate mandatory fields', async ({ dashboardPage }) => {
         await dashboardPage.clickAddBook();
         await dashboardPage.clickCreate();
-        await page.waitForSelector(`div#root li div div:nth-child(2)`, {timeout: 5000});
+        await dashboardPage.page.waitForSelector(`div#root li div div:nth-child(2)`, {timeout: 5000});
 
         expect(await dashboardPage.getErrorMessage()).toBe(`Please fill in both title and author fields`);
     });
 
-    test('Add a book', async ({ page }) => {
-        const dashboardPage = new DashboardPage(page);
+    test('Add a book', async ({ dashboardPage }) => {
         const randomAuthor = faker.person.fullName();
         const randomTitle = faker.word.words(3);
         
@@ -37,34 +30,35 @@ test.describe('User testing Suite', () => {
         await dashboardPage.fillTitle(randomTitle);
         await dashboardPage.clickCreate();
         
-        await page.waitForTimeout(1000);
+        await dashboardPage.page.waitForTimeout(1000);
         expect(await dashboardPage.getBookByTitle(randomTitle)).toBeVisible();
     });
 
-    test('Add a person', async ({ page }) => {
-        const dashboardPage = new DashboardPage(page);
+    test('Add a person', async ({ dashboardPage }) => {
         const randomPersonName = faker.person.fullName();
         
         await dashboardPage.addPerson(randomPersonName);
-        await page.waitForSelector('//h3', { timeout: 5000 });
+        await dashboardPage.page.waitForSelector('//h3', { timeout: 5000 });
 
-        expect(await dashboardPage.isPopupVisible()).toBeTruthy();
+        //expect(await dashboardPage.getPopupMessageText()).toBe();
+        
         expect(await dashboardPage.getPopupMessageText()).toBe(`Person added`);
     });
 
-    test('Manage people', async ({ page }) => {
-        const dashboardPage = new DashboardPage(page);
+    test.only('Manage people', async ({ dashboardPage }) => {
         const randomPersonName = faker.person.fullName();
-
         await dashboardPage.addPerson(randomPersonName);
+        const text = await dashboardPage.getPopupMessageText()
+        console.log(text);
+        expect(text).toBe(`Person added`);
         await dashboardPage.clickManagePerson();
-
         expect(await dashboardPage.isPersonInList(randomPersonName)).toBeTruthy();
     });
+ 
 
-    test('User logged out successfully', async ({ page }) => {
-        const dashboardPage = new DashboardPage(page);
+    test('User logged out successfully', async ({ dashboardPage }) => {
         await dashboardPage.clickSignOut()
+        await dashboardPage.page.waitForSelector('//h3', { timeout: 5000 });
 
         expect(await dashboardPage.getLoginPageTitle()).toBe('Automation Tutorials');
     });

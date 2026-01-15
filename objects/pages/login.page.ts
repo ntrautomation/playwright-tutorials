@@ -10,6 +10,7 @@ class LoginPage extends BasePage {
     //METHODS
 
     async loginUser(email: string, password: string): Promise<void> {
+        await this.page.goto('http://localhost:8080/login');
         await this.email.fill(email);
         await this.password.fill(password);
         await this.signInButton.click();
