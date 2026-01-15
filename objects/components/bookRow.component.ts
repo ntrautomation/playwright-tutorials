@@ -14,9 +14,7 @@ class BookRowComponent extends BasePage {
         this.page.locator(`//h3[contains(., '${titleText}')]/ancestor::div[contains(@class,'flex-1')]/following-sibling::div//button[.//svg[contains(@class,'lucide-pencil')]]`);
     private taskDeleteButton = (titleText: string): Locator =>
         this.page.locator(
-             `//h3[contains(., '${titleText}')]
-             /ancestor::div[contains(@class,'rounded-lg')]
-             //button[2]`
+             `//h3[contains(@class, 'text-sm') and text() = '${titleText}']/ancestor::div[contains(@class,'rounded-lg')]//button[2]`
           );
     
     private taskCompleted = (author: string, title: string): Locator =>

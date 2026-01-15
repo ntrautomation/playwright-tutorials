@@ -22,6 +22,7 @@ test.describe('User testing Suite', () => {
         managePeopleComponent = new ManagePeopleComponent (page);
         await page.goto('http://localhost:8080/login');
         await loginPage.loginUser(`tea@test.com`, `temp123`);
+        await loginPage.loginUser(`tea@test.com`, `temp123`);
         await page.waitForSelector('//h1', {timeout: 5000});
     })
     
@@ -43,8 +44,8 @@ test.describe('User testing Suite', () => {
         const authorName = "Automation";
         await libraryComponent.clickAddBook();
         expect(addBookComponent.dialogHeader).toBeVisible();
-        await addBookComponent.enterAuthorName(authorName);
-        await addBookComponent.enterBookTitle(bookTitle);
+        await addBookComponent.enterAuthorName(authorName, `Author *`);
+        await addBookComponent.enterBookTitle(bookTitle, `Title *`);
         await addBookComponent.createBookRecord();
         expect(await bookRowComponent.getTaskTitle(bookTitle)).toEqual(authorName + " - " + bookTitle);
         await bookRowComponent.deleteTask(bookTitle);
@@ -76,13 +77,13 @@ test.describe('User testing Suite', () => {
 
     })
 
-    test('Mark the book as completed', async ({page}) => {
+    test.only('Mark the book as completed', async ({page}) => {
         const bookTitle = "Luna";
         const authorName = "Vinka Sazdova";
         await libraryComponent.clickAddBook();
         expect(addBookComponent.dialogHeader).toBeVisible();
-        await addBookComponent.enterAuthorName(authorName);
-        await addBookComponent.enterBookTitle(bookTitle);
+        await addBookComponent.enterAuthorName(authorName, `Author *`);
+        await addBookComponent.enterBookTitle(bookTitle, `Title *`);
         await addBookComponent.createBookRecord();
         expect(await bookRowComponent.getTaskTitle(bookTitle)).toEqual(authorName + " - " + bookTitle);
         await bookRowComponent.toggleTaskCheckbox(bookTitle);
