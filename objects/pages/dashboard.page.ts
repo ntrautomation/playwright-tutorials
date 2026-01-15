@@ -37,7 +37,6 @@ class DashboardPage extends BasePage {
     }
 
     async clickManagePerson(): Promise<void> {
-        await this.page.waitForTimeout(5000);
         await this.managePeople.click();
     }
 

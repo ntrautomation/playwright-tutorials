@@ -6,7 +6,7 @@ test.describe('User testing Suite', () => {
     test.beforeEach(async ({ loginPage }) => {
         await loginPage.loginUser(`automation@test.com`, `temp123`);
         await loginPage.page.waitForSelector('//h1', {timeout: 5000});
-    })
+    });
     
     
     test('User logged in successfully', async ({ dashboardPage }) => {
@@ -36,21 +36,18 @@ test.describe('User testing Suite', () => {
 
     test('Add a person', async ({ dashboardPage }) => {
         const randomPersonName = faker.person.fullName();
-        
         await dashboardPage.addPerson(randomPersonName);
         await dashboardPage.page.waitForSelector('//h3', { timeout: 5000 });
 
-        //expect(await dashboardPage.getPopupMessageText()).toBe();
-        
         expect(await dashboardPage.getPopupMessageText()).toBe(`Person added`);
     });
 
-    test.only('Manage people', async ({ dashboardPage }) => {
+    test('Manage people', async ({ dashboardPage }) => {
         const randomPersonName = faker.person.fullName();
         await dashboardPage.addPerson(randomPersonName);
-        const text = await dashboardPage.getPopupMessageText()
-        console.log(text);
+        const text = await dashboardPage.getPopupMessageText();
         expect(text).toBe(`Person added`);
+
         await dashboardPage.clickManagePerson();
         expect(await dashboardPage.isPersonInList(randomPersonName)).toBeTruthy();
     });
