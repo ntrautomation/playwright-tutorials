@@ -12,14 +12,17 @@ class DashboardPage extends BasePage {
     private readonly managePeople: Locator = this.page.locator(`//button/span[text() = 'Manage People']`);
     private readonly createButton: Locator = this.page.locator(`//button[text() = 'Create']`);
     private readonly errorMessage: Locator = this.page.locator(`div#root li div div:nth-child(2)`);
-    private readonly popupMessageLocator: Locator = this.page.locator("[data-radix-collection-item] .grid > div:nth-child(2)");
-    private readonly authorInput: Locator = this.page.locator(`//input[@placeholder = 'Enter author name']`);
+    get popupMessageLocator(): Locator {
+        return this.page.locator('[data-radix-collection-item] .grid > div:nth-child(2)');
+      }
+          private readonly authorInput: Locator = this.page.locator(`//input[@placeholder = 'Enter author name']`);
     private readonly titleInput: Locator = this.page.locator(`//input[@placeholder = 'Enter book title']`);
     private readonly peopleListItems: Locator = this.page.locator("//div[contains(@class,'space-y-2') and contains(@class,'mt-4')]//div[contains(@class,'p-3')]");
     private readonly signOutButton: Locator = this.page.locator("//button[normalize-space()='Sign Out']");
 
     //METHODS
 
+    
     async getDashboardTitle(): Promise<string | null> {
         return await this.dashboardTitle.textContent();
     }

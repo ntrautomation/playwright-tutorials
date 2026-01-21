@@ -12,8 +12,8 @@
     "@types/node": "^25.0.3",
     "typescript": "^5.9.3"
   },
-  "scripts":{ 
-    "regression" : "npx playwright test",
-    "user_login" : "npx playwright test tests/users/users.spec.ts"
+  "scripts": {
+    "regression": "npx playwright test",
+    "user_login": "npx playwright test tests/users/users.spec.ts"
   }
 }
