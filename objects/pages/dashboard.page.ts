@@ -1,5 +1,6 @@
 import { Locator } from "@playwright/test";
 import BasePage from "./base.page";
+import { time } from "node:console";
 
 class DashboardPage extends BasePage {
 
@@ -58,7 +59,7 @@ class DashboardPage extends BasePage {
     }
 
     async isPopupVisible(): Promise<boolean> {
-        return await this.popupMessageLocator.isVisible();
+        return await this.popupMessageLocator.isVisible({timeout: 5000});
     }
 
     async fillAuthor(author: string): Promise<void> {
