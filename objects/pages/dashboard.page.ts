@@ -1,6 +1,5 @@
 import { Locator } from "@playwright/test";
 import BasePage from "./base.page";
-import { time } from "node:console";
 
 class DashboardPage extends BasePage {
 
@@ -10,7 +9,7 @@ class DashboardPage extends BasePage {
     private readonly addPersonButton: Locator = this.page.locator(`//button/span[text() = 'Add Person']`);
     private readonly enterNameField: Locator = this.page.locator(`//input[@placeholder='Enter person name']`);
     private readonly addPersonCreateButton: Locator = this.page.locator(`//div[@role="dialog"]//button[contains(@class, 'bg-primary')]`);
-    private readonly managePeople: Locator = this.page.locator(`//span[normalize-space()='Manage People']`);
+    private readonly managePeople: Locator = this.page.locator(`//button/span[text() = 'Manage People']`);
     private readonly createButton: Locator = this.page.locator(`//button[text() = 'Create']`);
     private readonly errorMessage: Locator = this.page.locator(`div#root li div div:nth-child(2)`);
     private readonly popupMessageLocator: Locator = this.page.locator("[data-radix-collection-item] .grid > div:nth-child(2)");
@@ -38,6 +37,7 @@ class DashboardPage extends BasePage {
     }
 
     async clickManagePerson(): Promise<void> {
+        await this.page.waitForTimeout(5000);
         await this.managePeople.click();
     }
 
@@ -59,7 +59,7 @@ class DashboardPage extends BasePage {
     }
 
     async isPopupVisible(): Promise<boolean> {
-        return await this.popupMessageLocator.isVisible({timeout: 5000});
+        return this.popupMessageLocator.isVisible();
     }
 
     async fillAuthor(author: string): Promise<void> {
@@ -82,7 +82,8 @@ class DashboardPage extends BasePage {
     }
 
     async isPersonInList(name: string): Promise<boolean> {
-        return await this.peopleListItems.locator(`text="${name}"`).isVisible();
+        await this.peopleListItems.locator(`text="${name}"`).waitFor({ state: 'visible', timeout: 5000 });
+        return true;
     }
 
     async waitForElementToAppear(locator: Locator, timeout: number = 5000): Promise<void> {
