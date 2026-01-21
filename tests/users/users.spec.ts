@@ -1,54 +1,55 @@
 import { test, expect } from '@fixtures/fixture.init';
 import { da, faker } from '@faker-js/faker';
+import Constants from '@objects/constants/constants';
 
 test.describe('User testing Suite', () => {
 
-    test.beforeEach(async ({ loginPage }) => {
+    test.beforeEach(async ({ loginPage, dashboardPage }) => {
         await loginPage.loginUser(`automation@test.com`, `temp123`);
-        await loginPage.page.waitForSelector('//h1', {timeout: 5000});
+        await dashboardPage.waitForDashboardTitle();
     })
     
     
     test('User logged in successfully', async ({ dashboardPage }) => {
-        expect(await dashboardPage.getDashboardTitle()).toBe('Dashboard');
+        expect(await dashboardPage.getDashboardTitle()).toBe(Constants.expectedDashboardTitle);
     });
 
     test('Validate mandatory fields', async ({ dashboardPage }) => {
         await dashboardPage.clickAddBook();
         await dashboardPage.clickCreate();
-        await dashboardPage.page.waitForSelector(`div#root li div div:nth-child(2)`, {timeout: 5000});
+        await dashboardPage.waitForErrorMessage();
 
-        expect(await dashboardPage.getErrorMessage()).toBe(`Please fill in both title and author fields`);
+        expect(await dashboardPage.getErrorMessage()).toBe(Constants.expectedErrorMessage);
     });
 
     test('Add a book', async ({ dashboardPage }) => {
         const randomAuthor = faker.person.fullName();
         const randomTitle = faker.word.words(3);
+        const bookLocator = await dashboardPage.getBookByTitle(randomTitle);
         
         await dashboardPage.clickAddBook();
         await dashboardPage.fillAuthor(randomAuthor);
         await dashboardPage.fillTitle(randomTitle);
         await dashboardPage.clickCreate();
-        
-        await dashboardPage.page.waitForTimeout(1000);
-        expect(await dashboardPage.getBookByTitle(randomTitle)).toBeVisible();
+
+        await bookLocator.waitFor({ state: 'visible' });
+
+        expect(bookLocator).toBeVisible();
     });
 
     test('Add a person', async ({ dashboardPage }) => {
         const randomPersonName = faker.person.fullName();
         
         await dashboardPage.addPerson(randomPersonName);
-        await dashboardPage.page.waitForSelector('//h3', { timeout: 5000 });
-
-        //expect(await dashboardPage.getPopupMessageText()).toBe();
+        await dashboardPage.waitForPopup();
         
-        expect(await dashboardPage.getPopupMessageText()).toBe(`Person added`);
+        expect(await dashboardPage.getPopupMessageText()).toBe(Constants.expectedPopupMessagePersonAdded);
     });
 
-    test.only('Manage people', async ({ dashboardPage }) => {
+    test('Manage people', async ({ dashboardPage }) => {
         const randomPersonName = faker.person.fullName();
         await dashboardPage.addPerson(randomPersonName);
-        const text = await dashboardPage.getPopupMessageText()
+        const text = await dashboardPage.getPopupMessageText();
         console.log(text);
         expect(text).toBe(`Person added`);
         await dashboardPage.clickManagePerson();
@@ -58,8 +59,8 @@ test.describe('User testing Suite', () => {
 
     test('User logged out successfully', async ({ dashboardPage }) => {
         await dashboardPage.clickSignOut()
-        await dashboardPage.page.waitForSelector('//h3', { timeout: 5000 });
+        await dashboardPage.waitForLoginPageTitle();
 
-        expect(await dashboardPage.getLoginPageTitle()).toBe('Automation Tutorials');
+        expect(await dashboardPage.getLoginPageTitle()).toBe(Constants.expectedLoginPageTitle);
     });
 });

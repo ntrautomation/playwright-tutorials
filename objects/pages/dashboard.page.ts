@@ -89,5 +89,21 @@ class DashboardPage extends BasePage {
     async waitForElementToAppear(locator: Locator, timeout: number = 5000): Promise<void> {
         await locator.waitFor({ state: 'visible', timeout });
     }
+
+    async waitForDashboardTitle(): Promise<void> {
+        await this.dashboardTitle.waitFor({ state: 'visible' });
+    }
+
+    async waitForErrorMessage(): Promise<void> {
+        await this.errorMessage.waitFor({ state: 'visible' });
+    }
+
+    async waitForLoginPageTitle(): Promise<void> {
+        await this.loginPageTitle.waitFor({ state: 'visible' });
+    }
+
+    async waitForPopup(): Promise<void> {
+        await this.popupMessageLocator.waitFor({ state: 'visible' });
+    }
 }
 export default DashboardPage;
