@@ -3,10 +3,18 @@ import BasePage from "./base.page";
 
 class LoginPage extends BasePage {
 
+    // LOCATOR PATHS
+    private readonly header: string = `//h3`;
+
     private readonly email: Locator = this.page.locator(`input#email`);
     private readonly password: Locator = this.page.locator(`input#password`);
     private readonly signInButton: Locator = this.page.locator(`//button[text() = 'Sign In']`);
 
+    //WAITS
+    async waitForHeader(): Promise<void> {
+        await this.waits.waitForLoad(this.page, this.header);
+    }
+    
     //METHODS
 
     async loginUser(email: string, password: string): Promise<void> {
