@@ -3,6 +3,14 @@ import BasePage from "./base.page";
 
 class DashboardPage extends BasePage {
 
+    //LOCATOR PATHS
+    private readonly popupSuccessMessageLocator: string = `div#root li div div:nth-child(2)`;
+    private bookHeader(bookName: string): string {
+        return `//h3[text() = '${bookName}']`;
+    }
+
+    // ELEMENT LOCATORS
+
     private readonly dashboardTitle: Locator = this.page.locator('//h1');
     private readonly loginPageTitle: Locator = this.page.locator(`//h3[normalize-space()='Automation Tutorials']`);
     private readonly addBookButton: Locator = this.page.locator(`//button/span[text() = 'Add a Book']`);
@@ -11,12 +19,21 @@ class DashboardPage extends BasePage {
     private readonly addPersonCreateButton: Locator = this.page.locator(`//div[@role="dialog"]//button[contains(@class, 'bg-primary')]`);
     private readonly managePeople: Locator = this.page.locator(`//button/span[text() = 'Manage People']`);
     private readonly createButton: Locator = this.page.locator(`//button[text() = 'Create']`);
-    private readonly errorMessage: Locator = this.page.locator(`div#root li div div:nth-child(2)`);
+    private readonly errorMessage: Locator = this.page.locator(this.popupSuccessMessageLocator);
     private readonly popupMessageLocator: Locator = this.page.locator("[data-radix-collection-item] .grid > div:nth-child(2)");
     private readonly authorInput: Locator = this.page.locator(`//input[@placeholder = 'Enter author name']`);
     private readonly titleInput: Locator = this.page.locator(`//input[@placeholder = 'Enter book title']`);
     private readonly peopleListItems: Locator = this.page.locator("//div[contains(@class,'space-y-2') and contains(@class,'mt-4')]//div[contains(@class,'p-3')]");
     private readonly signOutButton: Locator = this.page.locator("//button[normalize-space()='Sign Out']");
+
+    //WAITS
+    async waitForBookHeader(bookName: string): Promise<void> {
+        await this.waits.waitForLoad(this.page, this.bookHeader(bookName));
+    }
+
+    async waitForSuccessPopup(): Promise<void> {
+        await this.waits.waitForLoad(this.page, this.popupSuccessMessageLocator);
+    }
 
     //METHODS
 
@@ -65,8 +82,10 @@ class DashboardPage extends BasePage {
         await this.authorInput.fill(author);
     }
 
-    async fillTitle(title: string): Promise<void> {
+    async fillTitle(title: string): Promise<string> {
         await this.titleInput.fill(title);
+        console.log(`My book name is: ${title}`);
+        return title;
     }
 
     async addPerson(name: string): Promise<void> {
