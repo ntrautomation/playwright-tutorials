@@ -1,3 +1,4 @@
+import { ENV } from "@objects/config/ENV";
 import { defineConfig, devices } from '@playwright/test';
 
 /**
@@ -5,7 +6,7 @@ import { defineConfig, devices } from '@playwright/test';
  * https://github.com/motdotla/dotenv
  */
 import * as dotenv from 'dotenv';
-import { dot } from 'node:test/reporters';
+
 dotenv.config();
 if (process.env.ENV) {
   console.log(`ENVIRONMENT: `, process.env.ENV);
@@ -31,14 +32,21 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+    reporter: [
+      ['list'],
+      ['html'],
+      ['junit', { outputFile: 'test-results/junit-results.xml'}],
+    ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+  /* globalSetup login*/
+  globalSetup: require.resolve('@helpers/session/globalLogin'),
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
     // baseURL: 'http://localhost:3000',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    storageState : ENV.LOGGED_STATE_PATH,
   },
 
   /* Configure projects for major browsers *///sadfadsfasdasdasdas

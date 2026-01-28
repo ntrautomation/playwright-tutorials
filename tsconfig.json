@@ -4,7 +4,7 @@
         "paths": {
             "@objects/*" : ["objects/*"],
             "@pages/*" : ["objects/pages/*"],
-            "@helpers/*" : ["objects/helper/*"], 
+            "@helpers/*" : ["objects/helpers/*"], 
             "@envConfig/*" : ["objects/envConfig/*"],
             "@data/*" : ["objects/data/*"],
             "@fixtures/*" : ["objects/fixtures/*"],

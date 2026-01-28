@@ -1,11 +1,14 @@
 import { test, expect } from '@fixtures/fixture.init';
 import { da, faker } from '@faker-js/faker';
 import { DASHBOARD } from '@objects/enums/dashboard';
+import { ENV } from '@objects/config/ENV';
 
 test.describe('User testing Suite', () => {
 
+    test.use({ storageState: ENV.LOGGED_STATE_PATH});
     test.beforeEach(async ({ loginPage }) => {
-        await loginPage.loginUser(process.env.EMAIL, process.env.PASSWORD);
+        await loginPage.page.goto('http://localhost:8080/');
+        //await loginPage.loginUser(process.env.EMAIL, process.env.PASSWORD);
         await loginPage.waitForHeader();
     });
     
