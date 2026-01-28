@@ -4,9 +4,18 @@ import { defineConfig, devices } from '@playwright/test';
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+import * as dotenv from 'dotenv';
+import { dot } from 'node:test/reporters';
+dotenv.config();
+if (process.env.ENV) {
+  console.log(`ENVIRONMENT: `, process.env.ENV);
+  dotenv.config({
+    path: `.env.${process.env.ENV}`,
+    override: true
+  });
+}else {
+  dotenv.config();
+}
 
 /**
  * See https://playwright.dev/docs/test-configuration.
