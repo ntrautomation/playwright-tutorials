@@ -10,6 +10,10 @@ test.describe("User testing Suite", () => {
 		await loginPage.waitForHeader();
 	});
 
+	test.afterAll(async ({ booksApi }) => {
+		await booksApi.deleteBooks();
+	});
+
 	test("User logged in successfully", async ({ dashboardPage }) => {
 		expect(await dashboardPage.getDashboardTitle()).toBe(DASHBOARD.DASHBOARD_TITLE);
 	});
