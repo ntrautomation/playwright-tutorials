@@ -7,11 +7,12 @@ test.describe("User testing Suite", () => {
 	test.use({ storageState: ENV.LOGGED_STATE_PATH });
 	test.beforeEach(async ({ loginPage }) => {
 		await loginPage.page.goto(process.env.BASE_URL);
-		await loginPage.waitForHeader();
+		//await loginPage.waitForHeader();
 	});
 
-	test.afterAll(async ({ booksApi }) => {
+	test.afterAll(async ({ booksApi, peopleApi }) => {
 		await booksApi.deleteBooks();
+		await peopleApi.deletePeople();
 	});
 
 	test("User logged in successfully", async ({ dashboardPage }) => {
@@ -61,4 +62,5 @@ test.describe("User testing Suite", () => {
 		await dashboardPage.clickSignOut();
 		expect(await dashboardPage.getLoginPageTitle()).toBe(DASHBOARD.LOGIN_PAGE_TITLE);
 	});
+
 });

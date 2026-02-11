@@ -33,7 +33,7 @@ class TokenGeneration extends BaseApi {
 
 		const json = JSON.parse(bodyText) as TokenResponse;
 
-		if (!json.access_token) throw new Error(`No access toekn in reponse ${bodyText}`);
+		if (!json.access_token) throw new Error(`No access token in response ${bodyText}`);
 
 		return json;
 	}

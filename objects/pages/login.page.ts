@@ -11,9 +11,9 @@ class LoginPage extends BasePage {
     private readonly signInButton: Locator = this.page.locator(`//button[text() = 'Sign In']`);
 
     //WAITS
-    async waitForHeader(): Promise<void> {
-        await this.waits.waitForLoad(this.page, this.headerLocator);
-    }
+    // async waitForHeader(): Promise<void> {
+    //     await this.waits.waitForLoad(this.page, this.headerLocator);
+    // }
     //METHODS
 
     async loginUser(email: string, password: string): Promise<void> {
