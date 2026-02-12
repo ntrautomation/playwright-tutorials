@@ -4,63 +4,67 @@ import { DASHBOARD } from "@objects/enums/dashboard";
 import { ENV } from "@objects/config/ENV";
 
 test.describe("User testing Suite", () => {
-	test.use({ storageState: ENV.LOGGED_STATE_PATH });
-	test.beforeEach(async ({ loginPage }) => {
-		await loginPage.page.goto(process.env.BASE_URL);
-		//await loginPage.waitForHeader();
-	});
+  test.use({ storageState: ENV.LOGGED_STATE_PATH });
+  test.beforeEach(async ({ loginPage }) => {
+    await loginPage.page.goto(process.env.BASE_URL);
+    //await loginPage.waitForHeader();
+  });
 
-	test.afterAll(async ({ booksApi, peopleApi }) => {
-		await booksApi.deleteBooks();
-		await peopleApi.deletePeople();
-	});
+  test.afterAll(async ({ booksApi, peopleApi }) => {
+    await booksApi.deleteBooks();
+    await peopleApi.deletePeople();
+  });
 
-	test("User logged in successfully", async ({ dashboardPage }) => {
-		expect(await dashboardPage.getDashboardTitle()).toBe(DASHBOARD.DASHBOARD_TITLE);
-	});
+  test("User logged in successfully", async ({ dashboardPage }) => {
+    expect(await dashboardPage.getDashboardTitle()).toBe(
+      DASHBOARD.DASHBOARD_TITLE
+    );
+  });
 
-	test("Validate mandatory fields", async ({ dashboardPage }) => {
-		await dashboardPage.clickAddBook();
-		await dashboardPage.clickCreate();
-		await dashboardPage.waitForSuccessPopup();
+  test("Validate mandatory fields", async ({ dashboardPage }) => {
+    await dashboardPage.clickAddBook();
+    await dashboardPage.clickCreate();
+    await dashboardPage.waitForSuccessPopup();
 
-		expect(await dashboardPage.getErrorMessage()).toBe(DASHBOARD.ERROR_MESSAGE);
-	});
+    expect(await dashboardPage.getErrorMessage()).toBe(DASHBOARD.ERROR_MESSAGE);
+  });
 
-	test("Add a book", async ({ dashboardPage }) => {
-		const randomAuthor = faker.person.fullName();
-		const randomTitle = faker.word.words(3);
+  test("Add a book", async ({ dashboardPage }) => {
+    const randomAuthor = faker.person.fullName();
+    const randomTitle = faker.word.words(3);
 
-		await dashboardPage.clickAddBook();
-		await dashboardPage.fillAuthor(randomAuthor);
-		const bookTitle = await dashboardPage.fillTitle(randomTitle);
-		await dashboardPage.clickCreate();
+    await dashboardPage.clickAddBook();
+    await dashboardPage.fillAuthor(randomAuthor);
+    const bookTitle = await dashboardPage.fillTitle(randomTitle);
+    await dashboardPage.clickCreate();
 
-		await dashboardPage.waitForBookHeader(bookTitle);
-		expect(await dashboardPage.getBookByTitle(randomTitle)).toBeVisible();
-	});
+    await dashboardPage.waitForBookHeader(bookTitle);
+    expect(await dashboardPage.getBookByTitle(randomTitle)).toBeVisible();
+  });
 
-	test("Add a person", async ({ dashboardPage }) => {
-		const randomPersonName = faker.person.fullName();
-		await dashboardPage.addPerson(randomPersonName);
-		await dashboardPage.waitForSuccessPopup();
+  test("Add a person", async ({ dashboardPage }) => {
+    const randomPersonName = faker.person.fullName();
+    await dashboardPage.addPerson(randomPersonName);
+    await dashboardPage.waitForSuccessPopup();
 
-		expect(await dashboardPage.getPopupMessageText()).toBe(DASHBOARD.PERSON_ADDED);
-	});
+    expect(await dashboardPage.getPopupMessageText()).toBe(
+      DASHBOARD.PERSON_ADDED
+    );
+  });
 
-	test("Manage people", async ({ dashboardPage }) => {
-		const randomPersonName = faker.person.fullName();
-		await dashboardPage.addPerson(randomPersonName);
-		const text = await dashboardPage.getPopupMessageText();
-		expect(text).toBe(DASHBOARD.PERSON_ADDED);
+  test("Manage people", async ({ dashboardPage, peopleApi }) => {
+    const randomPersonName = faker.person.fullName();
+    await peopleApi.addPerson(randomPersonName);
+    await dashboardPage.page.reload();
 
-		await dashboardPage.clickManagePerson();
-		expect(await dashboardPage.isPersonInList(randomPersonName)).toBeTruthy();
-	});
+    await dashboardPage.clickManagePerson();
+    expect(await dashboardPage.isPersonInList(randomPersonName)).toBeTruthy();
+  });
 
-	test("User logged out successfully", async ({ dashboardPage }) => {
-		await dashboardPage.clickSignOut();
-		expect(await dashboardPage.getLoginPageTitle()).toBe(DASHBOARD.LOGIN_PAGE_TITLE);
-	});
-
+  test("User logged out successfully", async ({ dashboardPage }) => {
+    await dashboardPage.clickSignOut();
+    expect(await dashboardPage.getLoginPageTitle()).toBe(
+      DASHBOARD.LOGIN_PAGE_TITLE
+    );
+  });
 });
