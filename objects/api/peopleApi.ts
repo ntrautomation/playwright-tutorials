@@ -41,5 +41,23 @@ class PeopleApi extends TokenGeneration {
 			console.log(`Person deleted with id: ${id}`);
 		}
 	}
+
+	async addPerson(name: string) {
+		const tokenResponse = await this.generateToken();
+		const accessToken = tokenResponse.access_token;
+
+		const postUrl = 'https://shydksffesvxfmlmnpfi.supabase.co/rest/v1/persons';
+		await this.apiRequestContext.post(postUrl, {
+			headers: {
+				Authorization: `Bearer ${accessToken}`,
+				apiKey: process.env.API_KEY,
+			},
+			data: {
+				name: name,
+				user_id: process.env.USER_ID
+			}
+		})
+
+	}
 }
 export default PeopleApi;
