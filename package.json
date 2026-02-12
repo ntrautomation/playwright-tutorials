@@ -15,6 +15,7 @@
   },
   "scripts": {
     "regression": "npx playwright test",
-    "user_login": "npx playwright test tests/users/users.spec.ts"
+    "user_login": "npx playwright test tests/users/users.spec.ts",
+    "book_edit": "npx playwright test tests/books/books.spec.ts"
   }
 }
