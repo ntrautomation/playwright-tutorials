@@ -9,14 +9,27 @@ type TokenResponse = {
 };
 
 class TokenGeneration extends BaseApi {
-	constructor(apiRequestContext) {
+	constructor(apiRequestContext: any) {
 		super(apiRequestContext);
 	}
 
-	async generateToken() {
-		//Validate env variables if they exist before usage
+	async generateToken(): Promise<TokenResponse> {
 		const url = process.env.TOKEN_URL;
 		const apiKey = process.env.API_KEY;
+		const email = process.env.EMAIL;
+		const password = process.env.PASSWORD;
+
+		const missingVars = [];
+		if (!url) missingVars.push("TOKEN_URL");
+		if (!apiKey) missingVars.push("API_KEY");
+		if (!email) missingVars.push("EMAIL");
+		if (!password) missingVars.push("PASSWORD");
+
+		if (missingVars.length > 0) {
+			throw new Error(
+				`Missing required environment variables: ${missingVars.join(", ")}`
+			);
+		}
 
 		const res = await this.apiRequestContext.post(url, {
 			headers: {
@@ -24,18 +37,26 @@ class TokenGeneration extends BaseApi {
 				"Content-Type": "application/json",
 			},
 			data: {
-				email: process.env.EMAIL,
-				password: process.env.PASSWORD,
+				email: email,
+				password: password,
 			},
 		});
 
 		const bodyText = await res.text();
 
-		const json = JSON.parse(bodyText) as TokenResponse;
+		let json: TokenResponse;
+		try {
+			json = JSON.parse(bodyText);
+		} catch {
+			throw new Error(`Invalid JSON response from token endpoint: ${bodyText}`);
+		}
 
-		if (!json.access_token) throw new Error(`No access toekn in reponse ${bodyText}`);
+		if (!json.access_token) {
+			throw new Error(`No access token in response: ${bodyText}`);
+		}
 
 		return json;
 	}
 }
+
 export default TokenGeneration;
