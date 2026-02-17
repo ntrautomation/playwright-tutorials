@@ -1,20 +1,20 @@
 {
-    "compilerOptions": {
-        "baseUrl": "",
-        "paths": {
-            "@objects/*" : ["objects/*"],
-            "@pages/*" : ["objects/pages/*"],
-            "@helpers/*" : ["objects/helper/*"], 
-            "@envConfig/*" : ["objects/envConfig/*"],
-            "@data/*" : ["objects/data/*"],
-            "@fixtures/*" : ["objects/fixtures/*"],
-            "@config/*" : ["objects/config/*"]
-        },
-        "resolveJsonModule": true,
-        "moduleResolution": "node",
-        "target": "ESNext",
-        "lib": ["ESNext", "DOM"],
-        "types": ["node"]
-    },
-    "include": ["**/*.ts"]
+	"compilerOptions": {
+		"baseUrl": "",
+		"paths": {
+			"@objects/*": ["objects/*"],
+			"@pages/*": ["objects/pages/*"],
+			"@helpers/*": ["objects/helpers/*"],
+			"@envConfig/*": ["objects/envConfig/*"],
+			"@data/*": ["objects/data/*"],
+			"@fixtures/*": ["objects/fixtures/*"],
+			"@config/*": ["objects/config/*"]
+		},
+		"resolveJsonModule": true,
+		"moduleResolution": "node",
+		"target": "ESNext",
+		"lib": ["ESNext", "DOM"],
+		"types": ["node"]
+	},
+	"include": ["**/*.ts"]
 }
