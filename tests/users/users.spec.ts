@@ -5,9 +5,9 @@ import { ENV } from "@objects/config/ENV";
 
 test.describe("User testing Suite", () => {
 	test.use({ storageState: ENV.LOGGED_STATE_PATH });
-	test.beforeEach(async ({ loginPage }) => {
-		await loginPage.page.goto(process.env.BASE_URL);
-		await loginPage.waitForHeader();
+	test.beforeEach(async ({ loginPage, dashboardPage }) => {
+		await loginPage.navigate();
+		await dashboardPage.waitForHeader();
 	});
 
 	test.afterAll(async ({ booksApi }) => {
