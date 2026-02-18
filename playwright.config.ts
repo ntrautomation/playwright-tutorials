@@ -6,16 +6,20 @@ import { defineConfig, devices } from "@playwright/test";
  * https://github.com/motdotla/dotenv
  */
 import * as dotenv from "dotenv";
-import { dot } from "node:test/reporters";
+import * as fs from "node:fs";
+
+// Load default .env first
 dotenv.config();
+
+// If ENV is provided, load the corresponding file
 if (process.env.ENV) {
 	console.log(`ENVIRONMENT: `, process.env.ENV);
-	dotenv.config({
-		path: `.env.${process.env.ENV}`,
-		override: true,
-	});
-} else {
-	dotenv.config();
+	dotenv.config({ path: `.env.${process.env.ENV}`, override: true });
+}
+
+// If no ENV provided, but .env.local exists, prefer it
+if (!process.env.ENV && fs.existsSync(".env.local")) {
+	dotenv.config({ path: ".env.local", override: true });
 }
 
 /**
