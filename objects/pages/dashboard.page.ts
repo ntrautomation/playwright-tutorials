@@ -25,6 +25,10 @@ class DashboardPage extends BasePage {
     private readonly titleInput: Locator = this.page.locator(`//input[@placeholder = 'Enter book title']`);
     private readonly peopleListItems: Locator = this.page.locator("//div[contains(@class,'space-y-2') and contains(@class,'mt-4')]//div[contains(@class,'p-3')]");
     private readonly signOutButton: Locator = this.page.locator("//button[normalize-space()='Sign Out']");
+    private readonly dialogCloseButton: Locator = this.page.locator('[role="dialog"]').getByRole('button', { name: 'Close' });
+    private readonly myLibraryHeading: Locator = this.page.locator("//h2[normalize-space()='My Library']");
+    private readonly filterCombobox: Locator = this.page.getByRole("combobox").first();
+    private readonly personSelectInDialog: Locator = this.page.locator('[role="dialog"]').getByRole("combobox");
 
     //WAITS
     async waitForBookHeader(bookName: string): Promise<void> {
@@ -33,6 +37,10 @@ class DashboardPage extends BasePage {
 
     async waitForSuccessPopup(): Promise<void> {
         await this.waits.waitForLoad(this.page, this.popupSuccessMessageLocator);
+    }
+
+    async waitForBookCard(title: string): Promise<void> {
+        await this.page.locator('h3').filter({ hasText: title }).first().waitFor({ state: 'visible', timeout: 10000 });
     }
 
     //METHODS
@@ -95,8 +103,29 @@ class DashboardPage extends BasePage {
         await this.popupMessageLocator.waitFor({ state: 'visible', timeout: 5000 });
     }
 
+    async addBook(author: string, title: string): Promise<void> {
+        await this.clickAddBook();
+        await this.fillAuthor(author);
+        await this.fillTitle(title);
+        await this.clickCreate();
+        await this.waitForBookCard(title);
+    }
+
+    async addBookWithPerson(author: string, title: string, personName: string): Promise<void> {
+        await this.clickAddBook();
+        await this.selectPersonInBookDialog(personName);
+        await this.fillAuthor(author);
+        await this.fillTitle(title);
+        await this.clickCreate();
+        await this.waitForBookCard(title);
+    }
+
     async getBookByTitle(title: string): Promise<Locator> {
         return this.page.locator(`//h3[contains(text(), '${title.split(' ')[0]}')]`);
+    }
+
+    getBookTitleLocator(title: string): Locator {
+        return this.page.locator('h3').filter({ hasText: title });
     }
 
     async isPersonInList(name: string): Promise<boolean> {
@@ -106,6 +135,92 @@ class DashboardPage extends BasePage {
 
     async waitForElementToAppear(locator: Locator, timeout: number = 5000): Promise<void> {
         await locator.waitFor({ state: 'visible', timeout });
+    }
+
+    async closeDialog(): Promise<void> {
+        await this.dialogCloseButton.click();
+        await this.page.locator('[role="dialog"]').waitFor({ state: 'detached', timeout: 5000 });
+    }
+
+    async selectPersonInBookDialog(personName: string): Promise<void> {
+        await this.personSelectInDialog.click();
+        await this.page.getByRole("option", { name: personName }).click();
+    }
+
+    async filterByPerson(personName: string): Promise<void> {
+        await this.filterCombobox.click();
+        await this.page.getByRole("option", { name: personName }).click();
+    }
+
+    async resetFilter(): Promise<void> {
+        await this.filterCombobox.click();
+        await this.page.getByRole("option", { name: /all people/i }).click();
+    }
+
+    // VISIBILITY HELPERS
+
+    async isAddBookButtonVisible(): Promise<boolean> {
+        return this.addBookButton.isVisible();
+    }
+
+    async isAddPersonButtonVisible(): Promise<boolean> {
+        return this.addPersonButton.isVisible();
+    }
+
+    async isManagePeopleButtonVisible(): Promise<boolean> {
+        return this.managePeople.isVisible();
+    }
+
+    async isSignOutButtonVisible(): Promise<boolean> {
+        return this.signOutButton.isVisible();
+    }
+
+    async isAuthorInputVisible(): Promise<boolean> {
+        return this.authorInput.isVisible();
+    }
+
+    async isTitleInputVisible(): Promise<boolean> {
+        return this.titleInput.isVisible();
+    }
+
+    async isCreateButtonVisible(): Promise<boolean> {
+        return this.createButton.isVisible();
+    }
+
+    async isPersonNameInputVisible(): Promise<boolean> {
+        return this.enterNameField.isVisible();
+    }
+
+    async isPersonCreateButtonVisible(): Promise<boolean> {
+        return this.addPersonCreateButton.isVisible();
+    }
+
+    async getPeopleListCount(): Promise<number> {
+        return this.peopleListItems.count();
+    }
+
+    async isMyLibraryHeadingVisible(): Promise<boolean> {
+        return this.myLibraryHeading.isVisible();
+    }
+
+    async isUserEmailDisplayed(email: string): Promise<boolean> {
+        return this.page.getByText(email, { exact: true }).first().isVisible();
+    }
+
+    async isFilterComboboxVisible(): Promise<boolean> {
+        return this.filterCombobox.isVisible();
+    }
+
+    async isPersonDropdownInBookDialogVisible(): Promise<boolean> {
+        return this.personSelectInDialog.isVisible();
+    }
+
+    async isBookTitleOnCard(title: string): Promise<boolean> {
+        return this.page.locator('h3').filter({ hasText: title }).first().isVisible();
+    }
+
+    async isBookAuthorOnCard(author: string): Promise<boolean> {
+        return this.page.locator('h3').filter({ hasText: author }).first().isVisible();
     }
 }
 export default DashboardPage;

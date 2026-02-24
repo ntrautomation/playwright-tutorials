@@ -20,5 +20,17 @@ class LoginPage extends BasePage {
     await this.password.fill(password);
     await this.signInButton.click();
   }
+
+  async isEmailVisible(): Promise<boolean> {
+    return this.email.isVisible();
+  }
+
+  async isPasswordVisible(): Promise<boolean> {
+    return this.password.isVisible();
+  }
+
+  async isSignInButtonVisible(): Promise<boolean> {
+    return this.signInButton.isVisible();
+  }
 }
 export default LoginPage;

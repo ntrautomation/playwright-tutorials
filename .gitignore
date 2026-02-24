@@ -106,6 +106,10 @@ dist
 .temp
 .cache
 
+# MCP servers and LLMs
+.vscode/
+.claude/
+
 # Docusaurus cache and generated files
 .docusaurus
 

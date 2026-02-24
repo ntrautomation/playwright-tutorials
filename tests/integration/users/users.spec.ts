@@ -2,6 +2,9 @@ import { test, expect } from "@fixtures/fixture.init";
 import { da, faker } from "@faker-js/faker";
 import { DASHBOARD } from "@objects/enums/dashboard";
 import { ENV } from "@objects/config/ENV";
+import { generateRunId } from "@helpers/testId";
+
+const RUN_ID = generateRunId();
 
 test.describe("User testing Suite", () => {
 	test.use({ storageState: ENV.LOGGED_STATE_PATH });
@@ -11,7 +14,7 @@ test.describe("User testing Suite", () => {
 	});
 
 	test.afterAll(async ({ booksApi }) => {
-		await booksApi.deleteBooks();
+		await booksApi.deleteBooksWithPrefix(RUN_ID);
 	});
 
 	test("User logged in successfully", async ({ dashboardPage }) => {
@@ -28,7 +31,7 @@ test.describe("User testing Suite", () => {
 
 	test("Add a book", async ({ dashboardPage }) => {
 		const randomAuthor = faker.person.fullName();
-		const randomTitle = faker.word.words(3);
+		const randomTitle = `${RUN_ID}-${faker.word.words(3)}`;
 
 		await dashboardPage.clickAddBook();
 		await dashboardPage.fillAuthor(randomAuthor);
@@ -59,6 +62,7 @@ test.describe("User testing Suite", () => {
 
 	test("User logged out successfully", async ({ dashboardPage }) => {
 		await dashboardPage.clickSignOut();
-		expect(await dashboardPage.getLoginPageTitle()).toBe(DASHBOARD.LOGIN_PAGE_TITLE);
+		await dashboardPage.page.waitForURL(/\/login/, { timeout: 10000 });
+		expect(dashboardPage.page.url()).toContain("/login");
 	});
 });
