@@ -1,4 +1,5 @@
 import BaseApi from "./baseApi";
+import { APIResponse } from "@playwright/test";
 
 type TokenResponse = {
 	access_token: string;
@@ -36,6 +37,19 @@ class TokenGeneration extends BaseApi {
 		if (!json.access_token) throw new Error(`No access toekn in reponse ${bodyText}`);
 
 		return json;
+	}
+
+	async generateTokenRaw(email: string, password: string): Promise<APIResponse> {
+		const url = process.env.TOKEN_URL;
+		const apiKey = process.env.API_KEY;
+
+		return await this.apiRequestContext.post(url, {
+			headers: {
+				apiKey: apiKey,
+				"Content-Type": "application/json",
+			},
+			data: { email, password },
+		});
 	}
 }
 export default TokenGeneration;
